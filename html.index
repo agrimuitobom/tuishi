@@ -1,0 +1,438 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Leaf, 
+  Droplet, 
+  Sun, 
+  Heart, 
+  Clock, 
+  History, 
+  ShoppingBag, 
+  ChevronDown,
+  Menu,
+  X,
+  Thermometer,
+  Coffee
+} from 'lucide-react';
+
+// Color Palette based on Ishizuchi Kurocha characteristics
+const colors = {
+  primary: '#2F4F4F', // Dark Slate Gray (Tea leaves, mountains)
+  gold: '#D4AF37', // Gold (The color of the brewed tea)
+  accent: '#8B4513', // Saddle Brown (Earthy, traditional)
+  lightBg: '#F5F5DC', // Beige (Gentle background)
+  white: '#FFFFFF',
+};
+
+export default function IshizuchiKurochaSite() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Handle scroll for navbar styling
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id) => {
+    setIsMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const Navbar = () => (
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'}`}>
+      <div className="container mx-auto px-6 md:px-12 flex justify-between items-center">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+          <Leaf className={`w-8 h-8 ${isScrolled ? 'text-green-800' : 'text-yellow-500'}`} />
+          <span className={`text-2xl font-serif font-bold ${isScrolled ? 'text-green-900' : 'text-white'}`}>
+            石鎚黒茶
+          </span>
+        </div>
+        
+        {/* Desktop Menu */}
+        <div className={`hidden md:flex gap-8 font-medium ${isScrolled ? 'text-gray-700' : 'text-white'}`}>
+          {['特徴', '製法', '歴史', '飲み方', '商品'].map((item, idx) => (
+            <button 
+              key={idx} 
+              onClick={() => scrollToSection(['features', 'process', 'history', 'howto', 'shop'][idx])}
+              className="hover:text-yellow-500 transition-colors"
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+
+        {/* Mobile Menu Toggle */}
+        <button 
+          className={`md:hidden ${isScrolled ? 'text-gray-800' : 'text-white'}`}
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+      </div>
+        {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg py-4 flex flex-col items-center gap-4 text-gray-800 font-medium">
+          {['特徴', '製法', '歴史', '飲み方', '商品'].map((item, idx) => (
+             <button 
+             key={idx} 
+             onClick={() => scrollToSection(['features', 'process', 'history', 'howto', 'shop'][idx])}
+             className="hover:text-yellow-600 w-full py-2"
+           >
+             {item}
+           </button>
+          ))}
+        </div>
+      )}
+    </nav>
+  );
+
+  const Hero = () => (
+    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Image (Brighter tea plantation image) */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center z-0"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`,
+        }}
+      />
+      
+      {/* Vibrant Color Overlay: Green (Tea) to Gold (Brewed Tea) */}
+      <div className="absolute inset-0 bg-gradient-to-br from-green-900/80 to-yellow-700/60 z-0"></div>
+
+      <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto mt-20">
+        <div className="mb-6 inline-block px-5 py-2 bg-yellow-500/20 border-2 border-yellow-400 text-yellow-300 text-sm md:text-base font-bold tracking-widest rounded-full backdrop-blur-md shadow-lg">
+          愛媛県西条市・国指定重要無形民俗文化財
+        </div>
+        <h1 className="text-5xl md:text-8xl font-serif font-bold mb-6 leading-tight drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
+          幻のお茶、<br className="md:hidden" />石鎚黒茶。
+        </h1>
+        <p className="text-lg md:text-3xl mb-12 font-medium tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          霊峰・石鎚山の麓で受け継がれる<br/>
+          <span className="text-yellow-300 font-bold text-xl md:text-4xl">黄金色に輝く</span>、奇跡の二段発酵茶。
+        </p>
+        <button 
+          onClick={() => scrollToSection('features')}
+          className="bg-yellow-500 hover:bg-yellow-400 text-green-900 px-10 py-5 rounded-full font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-[0_10px_20px_rgba(0,0,0,0.4)] flex items-center gap-3 mx-auto"
+        >
+          その魅力を知る
+          <ChevronDown size={24} />
+        </button>
+      </div>
+    </section>
+  );
+
+  const Features = () => (
+    <section id="features" className="py-24 bg-[#F9F6F0] relative">
+      <div className="container mx-auto px-6 md:px-12 max-w-6xl">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-green-900 mb-4">日本にわずか４つ。貴重な後発酵茶</h2>
+          <div className="w-16 h-1 bg-yellow-500 mx-auto"></div>
+          <p className="mt-6 text-gray-700 max-w-2xl mx-auto leading-relaxed">
+            石鎚黒茶（いしづちくろちゃ）は、愛媛県西条市の石鎚山麓で江戸時代から伝わるお茶です。
+            一般的な緑茶とは異なり、茶葉を加熱した後に微生物の力で発酵させる「後発酵茶」の一種。
+            独特の爽やかな酸味とフルーティな香りが特徴です。
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-10">
+          {[
+            {
+              icon: <Droplet className="w-10 h-10 text-yellow-600" />,
+              title: "黄金色の水色と品のある酸味",
+              desc: "抽出液は碁石茶などよりも明るい美しい黄金色。お酢のようなツンとした酸っぱさではなく、柑橘を思わせるフルーティで爽やかな酸味と深い香りが楽しめます。"
+            },
+            {
+              icon: <Heart className="w-10 h-10 text-green-600" />,
+              title: "身体に優しい成分",
+              desc: "発酵により一般的な緑茶に比べカフェインやタンニンが少なく、胃に優しいのが特徴。リラックス効果があるとされるGABA（γ-アミノ酪酸）は紅茶の約5倍も含まれています。"
+            },
+            {
+              icon: <Thermometer className="w-10 h-10 text-orange-600" />,
+              title: "注目の健康機能性",
+              desc: "愛媛大学などの研究により、抗アレルギー効果、脂肪蓄積抑制、乳酸菌による整腸作用など、現代人に嬉しい様々な健康機能性が解明されつつあります。"
+            }
+          ].map((feature, idx) => (
+            <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100">
+              <div className="bg-orange-50 w-20 h-20 rounded-full flex items-center justify-center mb-6 mx-auto">
+                {feature.icon}
+              </div>
+              <h3 className="text-xl font-bold text-center text-gray-800 mb-4">{feature.title}</h3>
+              <p className="text-gray-600 leading-relaxed text-sm">{feature.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
+  const Process = () => (
+    <section id="process" className="py-24 bg-white">
+      <div className="container mx-auto px-6 md:px-12 max-w-6xl">
+        <div className="flex flex-col md:flex-row items-center gap-16">
+          <div className="md:w-1/2">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-green-900 mb-4">世界でも稀有な<br className="hidden md:block"/>「二段発酵」製法</h2>
+            <div className="w-16 h-1 bg-yellow-500 mb-6"></div>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              石鎚黒茶の最大の秘密は、糸状菌（カビ）による「好気発酵」と、乳酸菌による「嫌気発酵」を繰り返す二段発酵製法にあります。さらに、他の発酵茶にはない「揉む」工程が入ることも大きな特徴です。
+            </p>
+            <p className="text-gray-700 leading-relaxed mb-8">
+              毎年7月〜8月の猛暑の中、すべての工程が手作業で行われます。大変な手間と体力を要する、自然と微生物との共同作業です。
+            </p>
+            
+            <div className="space-y-4">
+              {[
+                { step: "1", title: "枝ごと収穫・洗浄・蒸し", desc: "硬化した茶葉を枝ごと刈り取り、丁寧に洗い、約1時間蒸します。" },
+                { step: "2", title: "一次発酵（好気発酵）", desc: "蒸した茶葉を桶に詰め、約1週間寝かせます。糸状菌により白いカビが生えます。" },
+                { step: "3", title: "揉捻（揉み作業）", desc: "茶葉を一斉に並んで揉み込みます。重労働ですが味を決める重要工程です。" },
+                { step: "4", title: "二次発酵（嫌気発酵）", desc: "再び桶に漬け込み、重しをして空気を抜き、乳酸菌の力で約2週間発酵させます。" },
+                { step: "5", title: "天日乾燥", desc: "太陽の下で広げて天日干し。黒く変化した茶葉から良い香りが漂います。" }
+              ].map((item, idx) => (
+                <div key={idx} className="flex gap-4 items-start">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-green-800 text-white flex items-center justify-center font-bold text-sm">
+                    {item.step}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-800">{item.title}</h4>
+                    <p className="text-sm text-gray-600">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="md:w-1/2 relative">
+            <div className="absolute inset-0 bg-yellow-500 rounded-3xl transform translate-x-4 translate-y-4 opacity-20"></div>
+            <img 
+              src="https://images.unsplash.com/photo-1594822765324-4fc6e7a251da?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+              alt="Tea leaves processing" 
+              className="relative z-10 rounded-3xl shadow-xl object-cover h-[600px] w-full"
+            />
+            {/* Note: In a real app, use actual photos of Ishizuchi Kurocha processing */}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  const HistorySection = () => (
+    <section id="history" className="py-24 bg-[#2F4F4F] text-white">
+      <div className="container mx-auto px-6 md:px-12 max-w-5xl text-center">
+        <History className="w-16 h-16 mx-auto mb-6 text-yellow-500 opacity-80" />
+        <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6">途絶えかけた伝統を救った「さつき会」</h2>
+        <div className="w-16 h-1 bg-yellow-500 mx-auto mb-10"></div>
+        
+        <p className="text-lg md:text-xl leading-relaxed mb-8 text-gray-200 text-left md:text-center">
+          江戸時代から霊峰石鎚山の登山客へのお接待として振る舞われ、長く愛されてきた石鎚黒茶。しかし、山村の過疎化や作り手の高齢化により、1996年には製造を知る農家が<b>たった一人</b>になってしまいました。
+        </p>
+        
+        <div className="bg-white/10 p-8 rounded-2xl backdrop-blur-md text-left mb-8 border border-white/20">
+          <p className="leading-relaxed mb-4">
+            「この土地の貴重な文化を、次の世代に残さなければならない」
+          </p>
+          <p className="leading-relaxed">
+            その危機に立ち上がったのが、地元の女性たちを中心とした市民グループ<b>「さつき会」</b>（西条市生活研究協議会）でした。最後の生産者から製法を学び、試行錯誤を重ねて伝統の味を復活させました。
+            現在では若い世代への継承も進み、福祉事業所など複数の団体が製造を行い、2023年には国の「重要無形民俗文化財」に指定されるまでに至りました。
+          </p>
+        </div>
+        
+        <p className="text-yellow-400 font-medium">
+          一杯の黒茶には、西条の自然の恵みと、人々の熱い想いが込められています。
+        </p>
+      </div>
+    </section>
+  );
+
+  const HowToDrink = () => (
+    <section id="howto" className="py-24 bg-[#F9F6F0]">
+      <div className="container mx-auto px-6 md:px-12 max-w-6xl">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-green-900 mb-4">美味しいお召し上がり方</h2>
+          <div className="w-16 h-1 bg-yellow-500 mx-auto"></div>
+          <p className="mt-6 text-gray-700 max-w-2xl mx-auto">
+            温かくても、冷やしても。季節や気分に合わせてお楽しみいただけます。
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            {
+              title: "急須で手軽に",
+              icon: <Coffee className="w-8 h-8 text-orange-800" />,
+              steps: [
+                "急須(約100~300ml)に茶葉を2〜3g入れます。",
+                "沸騰したお湯を注ぎます。",
+                "約30秒〜2分ほど置き、湯呑みに注ぎます。",
+                "スッキリとした酸味と香りが立ちます。"
+              ]
+            },
+            {
+              title: "やかん等で煮出して",
+              icon: <Thermometer className="w-8 h-8 text-red-600" />,
+              steps: [
+                "やかんで沸かした熱湯1Lに茶葉3〜4gを入れます。",
+                "弱火で1〜2分煮出します。",
+                "火を止め、約30分置いてからお飲みください。",
+                "しっかりとした味わいが出ます。冷やしても美味です。"
+              ]
+            },
+            {
+              title: "さっぱり水出し",
+              icon: <Droplet className="w-8 h-8 text-blue-500" />,
+              steps: [
+                "水500mlに対し、茶葉を2g入れます。",
+                "冷蔵庫で8時間程度じっくり置きます。",
+                "暑い夏にぴったり！",
+                "酸味がまろやかになり、さっぱりとお飲みいただけます。"
+              ]
+            }
+          ].map((method, idx) => (
+            <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-green-800">
+              <div className="flex items-center gap-4 mb-6 border-b pb-4">
+                {method.icon}
+                <h3 className="text-xl font-bold text-gray-800">{method.title}</h3>
+              </div>
+              <ul className="space-y-3">
+                {method.steps.map((step, i) => (
+                  <li key={i} className="flex gap-2 text-gray-700 text-sm">
+                    <span className="text-yellow-600 font-bold">•</span>
+                    {step}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-12 bg-yellow-50 rounded-xl p-6 border border-yellow-200 text-center">
+          <p className="text-gray-800 font-medium">
+            💡 <span className="font-bold text-orange-800">熟成させると味が変わる？</span><br/>
+            石鎚黒茶は3年ほど熟成させると、酸味の角が取れて甘みが増し、よりまろやかな味わいになります。
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+
+  const Shop = () => {
+    const products = [
+      {
+        name: "石鎚黒茶 (リーフ) 40g",
+        price: "¥2,350",
+        desc: "昔ながらの定番パッケージ。たっぷり楽しめる茶葉タイプです。",
+        tag: "定番人気",
+        img: "https://placehold.co/400x400/2F4F4F/FFFFFF?text=Kurocha+Leaf+40g"
+      },
+      {
+        name: "石鎚黒茶 ティーバッグ (8袋入)",
+        price: "¥1,800",
+        desc: "手軽に楽しめるティーバッグタイプ。2.5g×8袋入り。贈り物にも。",
+        tag: "手軽",
+        img: "https://placehold.co/400x400/8B4513/FFFFFF?text=Kurocha+TeaBags"
+      },
+      {
+        name: "三年熟成 石鎚黒茶 (10g)",
+        price: "¥1,500",
+        desc: "まぼろしの茶葉を3年間熟成。酸味を抑え甘みのあるまろやかな飲み口に。",
+        tag: "希少",
+        img: "https://placehold.co/400x400/D4AF37/FFFFFF?text=Aged+Kurocha+10g"
+      }
+    ];
+
+    return (
+      <section id="shop" className="py-24 bg-white">
+        <div className="container mx-auto px-6 md:px-12 max-w-6xl">
+          <div className="text-center mb-16">
+            <ShoppingBag className="w-12 h-12 mx-auto text-green-800 mb-4" />
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-green-900 mb-4">商品紹介</h2>
+            <div className="w-16 h-1 bg-yellow-500 mx-auto"></div>
+            <p className="mt-6 text-gray-700">
+              さつき会が丹精込めて手作りした石鎚黒茶。ご自宅用にも、健康を気遣う方への贈り物にも。
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {products.map((product, idx) => (
+              <div key={idx} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group">
+                <div className="relative overflow-hidden h-64 bg-gray-100 flex items-center justify-center">
+                  {/* Using placeholder for mock shop. Real implementation should use actual package images */}
+                  <img src={product.img} alt={product.name} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute top-4 left-4 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                    {product.tag}
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{product.name}</h3>
+                  <p className="text-gray-600 text-sm mb-4 h-10">{product.desc}</p>
+                  <div className="flex justify-between items-center mt-6">
+                    <span className="text-2xl font-bold text-green-900">{product.price}</span>
+                    <button className="bg-green-800 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                      詳細を見る
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <a 
+              href="https://kurocha.buyshop.jp/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-yellow-600 hover:bg-yellow-500 text-white px-8 py-4 rounded-full font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            >
+              <ShoppingBag size={20} />
+              さつき会 公式オンラインショップへ
+            </a>
+            <p className="mt-4 text-sm text-gray-500">※外部の販売サイトへ遷移します</p>
+          </div>
+        </div>
+      </section>
+    );
+  };
+
+  const Footer = () => (
+    <footer className="bg-gray-900 text-gray-300 py-12 border-t border-gray-800">
+      <div className="container mx-auto px-6 md:px-12 max-w-6xl">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2">
+            <Leaf className="w-8 h-8 text-green-500" />
+            <div>
+              <span className="text-2xl font-serif font-bold text-white block">石鎚黒茶</span>
+              <span className="text-xs text-gray-400 tracking-wider">ISHIZUCHI KUROCHA</span>
+            </div>
+          </div>
+          
+          <div className="text-center md:text-right text-sm">
+            <p className="mb-2">愛媛県西条市特産・国指定重要無形民俗文化財</p>
+            <p>※本サイトは石鎚黒茶の魅力を伝える非公式のファンサイト/プロモーション用モックアップです。</p>
+          </div>
+        </div>
+        <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+          &copy; {new Date().getFullYear()} Ishizuchi Kurocha Fan Page. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  );
+
+  return (
+    <div className="font-sans text-gray-800 bg-white selection:bg-yellow-200 selection:text-green-900">
+      <Navbar />
+      <main>
+        <Hero />
+        <Features />
+        <Process />
+        <HistorySection />
+        <HowToDrink />
+        <Shop />
+      </main>
+      <Footer />
+    </div>
+  );
+}
